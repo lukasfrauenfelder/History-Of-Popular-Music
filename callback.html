@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Callback</title>
+</head>
+<body>
+  <h1>Verarbeitung...</h1>
+  <script>
+    const client_id = '5efc4a0c8c6d453f8bd56a9a46a926f0'; // <-- Ersetze mit deiner Client ID
+    const redirect_uri = 'http://127.0.0.1:8888/callback.html';
+
+    const code = new URLSearchParams(window.location.search).get('code');
+    const verifier = localStorage.getItem('verifier');
+
+    async function fetchAccessToken() {
+      const body = new URLSearchParams({
+        client_id,
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri,
+        code_verifier: verifier
+      });
+
+      const response = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body
+      });
+
+      const data = await response.json();
+      console.log('Access Token:', data.access_token);
+      alert("Access Token erfolgreich erhalten. Siehe Konsole.");
+
+        // ⬇️ Speichern und zurück zur index.html
+        localStorage.setItem('spotify_access_token', data.access_token);
+        window.location.href = 'index.html';
+    }
+
+    if (code) {
+      fetchAccessToken();
+    } else {
+      document.body.innerHTML = 'Kein Code vorhanden.';
+    }
+  </script>
+
+
+</body>
+</html>

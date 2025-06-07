@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script src="p5.min.js"></script>
+  
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    console.log(params.has("view"))
+  // 🔁 Redirect to ?view=genre if no 'view' is set, then STOP the script
+  if (!params.has('view')) {
+    window.location.search = '?view=genre';
+  } else {
+    const isEmotionView = params.get("view") === "emotions";
+
+    if (isEmotionView) {
+      console.log("active")
+      document.write('<link rel="stylesheet" type="text/css" href="/Emotions_secondTry/style.css"/>');
+      document.write('<script src="/Emotions_secondTry/just_writeOut.js" defer><\/script>');
+    } else {
+      console.log("active")
+      document.write('<link rel="stylesheet" type="text/css" href="/Genre/style_white.css" />');
+      document.write('<script src="/Genre/just_writeOut.js" defer><\/script>');
+    }
+  }
+     
+  </script>
+
+  <title>History of Popular Music</title>
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
+
+
+<div class = header>
+  <h1>History of Popular Music</h1>
+  <a href="#" id="imageLink">
+    <img src="pngItem.png" alt="Description" />
+  </a>
+  <div id="infoBox" >
+    <div id="Hintergrund">
+    <p>"History of Popular Music" is an interactive data visualization that explores the evolution of popular music between 1965 and 2010. Based on the Billboard Hot 100, it reveals how genres and emotional content in song lyrics have changed over the decades. The goal of the visualization is not only to highlight trends over time but also to allow users to discover individual songs and artists behind the data</p>
+    <!-- Move these two lines here: -->
+    <p class="genreButtonInfo">
+      <a href="#" id="genreButton">Genre</a>
+    </p>
+
+    <p class="emotionButtonInfo">
+      <a href="#" id="emotionButton">Emotions</a>
+    </p>
+    <p class="genreText">This visualization sorts songs into stylistic categories such as Rock, Hip-Hop, Pop, or Jazz, and shows when these styles were especially popular. Click the legend to select individual genres.
+
+      The genre classification is based on AI-driven audio analysis and may contain inaccuracies. The data comes from the study "The Evolution of Popular Music" by Mauch et al.</p>
+    <p class="emotionText">The lyrics of all songs were analyzed for their emotional impact using an emotional analysis. The AI ​​evaluates the correlation with the given emotion, with a value between 0 (does not apply at all) and 1 (completely applies).
+      The visualization shows the intensity of these five emotions over the entire period. The average value of each emotion was set as the threshold.
+      
+      The threshold can be adjusted as desired using the slider. This makes it easy to find out which songs most strongly evoke an emotion.
+      Individual emotions can be shown or hidden by clicking on the legend.</p>
+
+    <p class="loginText">To play music: agree and confirm</p>
+    <!-- <button id="login">Login with Spotify</button> -->
+    <p class="loginButton">
+      <a href="#" id="login">Login with Spotify</a>
+    </p>
+    
+    </div>
+  </div>
+  
+    
+  <button id="togglePlay" style= "display: none; background: none; border: none; cursor: pointer;">
+      
+    <svg id="pauseIcon" width="32" height="32" viewBox="0 0 24 24" fill="black" >
+      <rect x="6" y="5" width="3.5" height="14"></rect>
+      <rect x="14" y="5" width="3.5" height="14"></rect>
+    </svg>
+    <!-- Hidden Play icon -->
+    <svg id="playIcon" width="32" height="32" viewBox="0 0 24 24" fill="black" style="display: none;">
+      <path d="M8 5v14l11-7z"/>
+    </svg>
+
+  </button>
+  <div id="Legende"></div>
+  <p class="genreButton">
+    <a href="?view=genre">Genre</a>
+  </p>
+
+  <p class="emotionButton">
+    <a href="?view=emotions">Emotions</a>
+  </p>
+
+</div>
+<div id="songList" style="position: fixed; left: 0px; top: 94px; max-height: 95vh; overflow-y: auto; color: white;"></div>
+
+
+</head>
+<body>
+  <script>
+    const client_id = '5efc4a0c8c6d453f8bd56a9a46a926f0'; // <-- Ersetze mit deiner Client ID
+    const redirect_uri = 'http://127.0.0.1:8888/callback.html';
+
+    function generateCodeVerifier(length = 128) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    }
+
+    async function generateCodeChallenge(verifier) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(verifier);
+      const digest = await crypto.subtle.digest('SHA-256', data);
+      const base64 = btoa(String.fromCharCode(...new Uint8Array(digest)))
+        .replace(/=/g, '')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_');
+      return base64;
+    }
+
+    document.getElementById('login').addEventListener('click', async () => {
+      const verifier = generateCodeVerifier();
+      const challenge = await generateCodeChallenge(verifier);
+
+      localStorage.setItem('verifier', verifier);
+
+      const scopes = [
+        'streaming',
+        'user-read-email',
+        'user-read-private',
+        'user-modify-playback-state'
+      ];
+
+      const url = `https://accounts.spotify.com/authorize?` +
+        `client_id=${client_id}` +
+        `&response_type=code` +
+        `&redirect_uri=${encodeURIComponent(redirect_uri)}` +
+        `&scope=${encodeURIComponent(scopes.join(' '))}` +
+        `&code_challenge_method=S256` +
+        `&code_challenge=${challenge}`;
+
+      window.location = url;
+    })
+  </script>
+  <script>
+    function playSong(device_id, token,songUri) {
+      console.log("Spiele ab:", songUri);
+      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          uris: [songUri] // Beispiel-Song
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('Song gestartet!');
+           // ✅ Show the play/pause toggle button
+            document.getElementById('togglePlay').style.display = "inline-block";
+        } else {
+          console.error('Fehler beim Starten:', response.statusText);
+        }
+      });
+    }
+
+    window.playSong = playSong;
+  
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const token = localStorage.getItem('spotify_access_token');
+      if (!token) {
+        console.error("Kein Token gefunden!");
+        return;
+      }
+  
+      const player = new Spotify.Player({
+        name: 'My Spotify Player',
+        getOAuthToken: cb => cb(token),
+        volume: 0.5
+      });
+  
+      player.addListener('ready', ({ device_id }) => {
+        console.log('Player bereit mit Device ID:', device_id);
+        
+        window.spotifyDeviceId = device_id;
+        window.spotifyToken = token;
+        // 🎯 Hier Song starten
+        // playSong(device_id, token);
+      });
+  
+      // Fehlerbehandlung ...
+      player.connect();
+      document.getElementById('togglePlay').onclick = function() {
+      player.togglePlay();
+};
+
+    };
+  </script>
+
+   
+
+<script>
+  function switchEmotions(){
+    const existingScript = document.querySelector('script[src="/Genre/just_writeOut.js"]')
+    
+    if (existingScript){
+      existingScript.remove();
+    }
+
+    const newScript = document.createElement("script")
+    newScript.src = '/Emotions/Emotions.js'
+    newScript.defer = true
+    newScript.onload = () => {
+      console.log('Emotion script loaded!');
+      window.initEmotionView(); // or initGenreView()
+
+    };    
+    document.body.appendChild(newScript)
+    // console.log(newScript)
+  }
+</script>
+
+<script>
+ document.getElementById("imageLink").addEventListener("click", function (e) {
+    e.preventDefault(); // verhindert Navigation
+
+    const infoBox = document.getElementById("infoBox");
+    
+
+    // Toggle "active" class
+    infoBox.classList.toggle("active");
+    
+  });
+  </script>
+
+<script>
+  const button = document.getElementById("togglePlay");
+  const playIcon = document.getElementById("playIcon");
+  const pauseIcon = document.getElementById("pauseIcon");
+
+  let isPlaying = false;
+
+  button.addEventListener("click", () => {
+    isPlaying = !isPlaying;
+
+    // playIcon.style.display = isPlaying ? "none" : "block";
+    // pauseIcon.style.display = isPlaying ? "block" : "none";
+
+    playIcon.style.display = isPlaying ? "block" : "none";
+    pauseIcon.style.display = isPlaying ? "none" : "block";
+
+
+    // Optionally: trigger your actual play/pause logic
+    // if (isPlaying) playAudio(); else pauseAudio();
+  });
+</script>
+
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const view = params.get("view");
+
+    const genreButton = document.querySelector(".genreButton");
+    const emotionButton = document.querySelector(".emotionButton");
+
+    const genreBtn = document.querySelector(".genreButtonInfo");
+    const emotionBtn = document.querySelector(".emotionButtonInfo");
+
+    const genreText = document.querySelector(".genreText");
+    const emotionText = document.querySelector(".emotionText");
+
+    if (view === "genre" && genreBtn) {
+      genreButton.classList.add("active")
+      genreBtn.classList.add("active");
+      genreText.style.display = "block";
+      emotionText.style.display = "none";
+
+    } else if (view === "emotions" && emotionBtn) {
+      emotionButton.classList.add("active")
+      emotionBtn.classList.add("active");
+      genreText.style.display = "none";
+       emotionText.style.display = "block";
+
+    }
+
+    genreBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    genreBtn.classList.add("active");
+    emotionBtn.classList.remove("active")
+    genreText.style.display = "block";
+    emotionText.style.display = "none";
+  });
+
+    emotionBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    emotionBtn.classList.add("active");
+    genreBtn.classList.remove("active")
+    genreText.style.display = "none";
+    emotionText.style.display = "block";
+  });
+    
+  });
+</script>
+
+</body>
+</html>
