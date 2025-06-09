@@ -13,5 +13,5 @@
 - `README.md` – Project documentation
 
 
-**check out my page on:**
+**check out the page on:**
 https://lukasfrauenfelder.github.io/History-Of-Popular-Music/
