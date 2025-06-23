@@ -1,3 +1,5 @@
+const width = window.innerWidth;
+const h = window.innerHeight;
 const slidertext = document.querySelector(".txt");
 const songList = document.getElementById("songList");
 const Legende = document.getElementById("Legende");
@@ -8,7 +10,10 @@ let slider;
 let cnv
 let currentEmotions = null;
 let mouseXInSongList = 0;
-const minWidth = 38.25;
+// const minWidth = 48.25;
+// const minWidth = 38.25;
+const minWidth = (width-70)/45
+
 const maxWidth = 500;
 const hundert = 500;
 let blockWidth = minWidth; // starting width
@@ -22,7 +27,7 @@ songList.addEventListener("wheel", (e) => {
   const delta = e.deltaY;
   blockWidth -= delta * 0.2; // scale sensitivity
   blockWidth = Math.max(minWidth, Math.min(maxWidth, blockWidth)); // clamp
-  slider.value(blockWidth); // keep slider in sync
+  // slider.value(blockWidth); // keep slider in sync
 
   updateBlockWidths(); // apply new width
 }, { passive: false }); // passive must be false to use preventDefault
@@ -65,6 +70,14 @@ function preload() {
     emotionValueDisplay.id = "emotionValueDisplay";
     document.body.appendChild(emotionValueDisplay);
 
+    min = document.createElement("h3");
+    min.id = "min";
+    document.body.appendChild(min);
+
+    max = document.createElement("h3");
+    max.id = "max";
+    document.body.appendChild(max);
+
     genreDropdown = createSelect();
     genreDropdown.position(-20, -50);
     genreDropdown.option('all');
@@ -82,26 +95,32 @@ function preload() {
     genreDropdown.changed(renderSongList); // redraw when selection changes
     emotionDropdown.changed(renderSongList)
 
-    slider = createSlider(0,100,0)
+    slider = createSlider(0,80,0)
     // slider.position(1090,52)
     slider.style('z-index', '100'); // 👈 Set z-index here
      // Add a class
     slider.class('my-slider');
 
     slider.input(() => {
-      // const values = document.querySelectorAll(".value");
-      
-      // values.forEach(el => {
-      //   el.style.opacity = "1";
-      // });
     
-      // setTimeout(() => {
-      //   values.forEach(el => {
-      //     el.style.opacity = "0.5";
-      //   });
-      // }, 2000); // after 2 seconds
     
       renderSongList();
+      const values = document.querySelectorAll(".value");
+      values.forEach(el => {
+        if (!el.classList.contains("emotion-all")) {
+          el.style.opacity = "1";
+        }
+      });
+
+       // After 2 seconds, set opacity back to 0.5
+      setTimeout(() => {
+        values.forEach(el => {
+          if (!el.classList.contains("emotion-all")) {
+            el.style.opacity = "0.5";
+          };
+        });
+      }, 1000); // 2000 milliseconds = 2 seconds
+
     });
     
     renderSongList()
@@ -114,15 +133,23 @@ function preload() {
 
     selectedGenre = genreDropdown.value(); // get currently selected genre
     // selectedEmotion = emotionDropdown.value()
-    Schwellenwert = map(slider.value(),0,100,0,1)
-
+    Schwellenwert = map(slider.value(),0,80,0,0.8)
+    
     const emotionThresholds = {
-      sadness: 0.4+Schwellenwert,
-      anger: 0.3+Schwellenwert,
-      fear: 0.3+Schwellenwert,
-      disgust: 0.21+Schwellenwert,
-      joy: 0.5+Schwellenwert
+      sadness: 0.199+Schwellenwert,
+      anger: 0.199+Schwellenwert,
+      fear: 0.199+Schwellenwert,
+      disgust: 0.199+Schwellenwert,
+      joy: 0.199+Schwellenwert
     };
+
+    // const emotionThresholds = {
+    //   sadness: 0.240+Schwellenwert,
+    //   anger: 0.160+Schwellenwert,
+    //   fear: 0.189+Schwellenwert,
+    //   disgust: 0.111+Schwellenwert,
+    //   joy: 0.297+Schwellenwert
+    // };
 
 
 
@@ -179,7 +206,12 @@ function preload() {
       }
         // ✅ Add this click listener
       legendeContent.addEventListener("click", () => {
-        selectedEmotion = emotion; // Set the selected emotion
+        if(selectedEmotion === emotion){
+          selectedEmotion = "all"
+        } else{
+          selectedEmotion = emotion; // Set the selected emotion
+
+        }
         console.log("Selected Emotion:", selectedEmotion);
 
         renderSongList()
@@ -252,8 +284,9 @@ function preload() {
     }
 
 
-    emotionValueDisplay.textContent = `Change Threshold`;
-    
+    emotionValueDisplay.textContent = `Emotion Intensity Threshold`;
+    min.textContent = `mean ⌀`;
+    max.textContent = `max`;
 
     
     for (let songData of year) {
@@ -271,7 +304,6 @@ function preload() {
 
 
 
-
        // Create a container for this year
   const yearDiv = document.createElement("div");
   yearDiv.classList.add("year-block");
@@ -285,12 +317,15 @@ function preload() {
   yearHeaderContent.classList.add("yearHeaderContent");
   yearHeader.appendChild(yearHeaderContent);
   yearDiv.appendChild(yearHeader);
-
-  let emotionBandHeight = 150; // space per emotion
+  
+  let emotionBandHeight = ((h-157.5)/5.7);
+  console.log(emotionBandHeight)
+  // let emotionBandHeight = 180; // space per emotion
+  // let emotionBandHeight = 150; // space per emotion
   let emotionSpacing = 20;     // space between emotion bands
 
   let bandTop = 60; // starting Y position for drawing emotions
-  let rh = 9
+  let rh = 3
 
   // Add songs
   for (let i = 0; i < emotionOrder.length; i++) {
@@ -357,9 +392,12 @@ function preload() {
       let songUri = songData["Spotify_uri"];
     
       if (window.spotifyDeviceId && window.spotifyToken && songUri) {
-        playSong(window.spotifyDeviceId, window.spotifyToken, songUri);
+        playSong(window.spotifyDeviceId, window.spotifyToken, songUri,text);
       } else {
         console.warn("Fehlende Daten für playSong()");
+        const Intro = document.getElementById("spotifyIntro");
+        Intro.classList.add("active")
+
       }
     });
     
@@ -375,11 +413,16 @@ const songHeight = genreHeight / genre_length;
 
 // songFlex.style.height = `${songHeight}px`;
 songFlex.style.height = `20px`;
+
+//Hover
+const hoverDetails = document.createElement("div");
+hoverDetails.classList.add("hover-details");
+hoverDetails.textContent = artist //+ " – " + track;
+
 // Artist on the left
 const artistSpan = document.createElement("span");
 artistSpan.textContent = artist;
 artistSpan.classList.add("artist-name");
-artistSpan.classList.add("emotion-" + emotion.replace(/\s|\/|-/g, "_").toLowerCase());
 
 
 // Track on the right
@@ -397,21 +440,11 @@ songFlex.appendChild(trackSpan);
 // songFlex.appendChild(lyricsSpan);
 
 // Append flex container to link
+songItem.appendChild(hoverDetails);
 songItem.appendChild(songFlex);
 emotionGroup.appendChild(songItem);
 yearDiv.appendChild(emotionGroup);
 
-    // if (spotifyLink) {
-    //   // songItem.style.textDecoration = "underline";
-    //   songItem.addEventListener("mouseover", () => {
-    //       currentEmotions = JSON.parse(songItem.dataset.emotions);
-    //       drawEmotions(currentEmotions)
-    //     });
-        
-    //     songItem.addEventListener("mouseout", () => {
-    //       currentEmotions = null;
-    //     });
-    // }
 
     // yearDiv.appendChild(songItem);
     }
@@ -442,7 +475,7 @@ yearDiv.appendChild(emotionGroup);
     const totalScroll = songListWidth - viewWidth;
   
     // Width update
-    const newWidth = slider.value();
+    
     document.querySelectorAll(".year-block").forEach(block => {
       block.style.width = `${blockWidth}px`;
 
@@ -459,30 +492,35 @@ yearDiv.appendChild(emotionGroup);
         } else {
           link.classList.remove("rect-mode");
         }
-
-        // if (blockWidth > 130) {
-        //   link.classList.add("list-mode");
-        // } else {
-        //   link.classList.remove("list-mode");
-        // }
       });
       
 
       const songFlexElements = block.querySelectorAll(".song-flex");
       songFlexElements.forEach(flex => {
-        const lyricsSpan = flex.querySelectorAll("lyrics")
         if (blockWidth < 130) {
           flex.classList.add("rect-mode");
-          lyricsSpan.forEach(l => {
-            l.textContent = "gugugs"
-          })
         } else {
           flex.classList.remove("rect-mode");
         }
 
-        
-     
+        if (blockWidth > 130) {
+          flex.classList.add("absolute-mode");
+        } else {
+          flex.classList.remove("absolute-mode");
+        }
+
+        const genreTag = flex.querySelector(".genre-tag");
+          if (!genreTag) return;
+          // console.log(genreTag)
+          if (blockWidth > 130) {
+            genreTag.classList.add("rect-mode");
+          } else {
+            genreTag.classList.remove("rect-mode");
+          }
       });
+
+
+      
 
     });
   

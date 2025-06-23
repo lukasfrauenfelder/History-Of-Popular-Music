@@ -1,4 +1,7 @@
 // const slidertext = document.querySelector(".txt");
+const width = window.innerWidth;
+const h = window.innerHeight;
+console.log(h)
 var songList = document.getElementById("songList");
 const Legende = document.getElementById("Legende");
 songList.innerHTML = ""; // Clear previous entries
@@ -7,7 +10,9 @@ let slider;
 let cnv
 let currentEmotions = null;
 let mouseXInSongList = 0;
-const minWidth = 38.25;
+// const minWidth = 48.25;
+// const minWidth = 38.25;
+const minWidth = (width-70)/45
 const maxWidth = 500;
 const hundert = 500;
 let blockWidth = minWidth; // starting width
@@ -105,6 +110,9 @@ function preload() {
         legendeContent.textContent = "select all"
       } else{      legendeContent.textContent = genreOrderLegende[g]
       }
+
+      // if (Genre === "RnB/soul"){
+      //   legendeContent.setAttribute("id","RnB")}
       legendeContent.classList.add("genre-" + Genre.replace(/\s|\/|-/g, "_").toLowerCase());
 
           // ✅ Apply highlight if this is the selected genre
@@ -113,7 +121,12 @@ function preload() {
       }
         // ✅ Add this click listener
       legendeContent.addEventListener("click", () => {
-        selectedGenre = Genre; // Set the selected emotion
+        if(selectedGenre === Genre){
+          selectedGenre = "all"
+        } else{
+          selectedGenre = Genre; // Set the selected emotion
+
+        }
         console.log("Selected Genre:", selectedGenre);
 
         renderSongList()
@@ -217,9 +230,13 @@ function preload() {
       let songUri = songData["Spotify_uri"];
     
       if (window.spotifyDeviceId && window.spotifyToken && songUri) {
-        playSong(window.spotifyDeviceId, window.spotifyToken, songUri);
+        playSong(window.spotifyDeviceId, window.spotifyToken, songUri,text);
       } else {
         console.warn("Fehlende Daten für playSong()");
+        // const Intro = document.getElementById("spotifyIntro");
+        // Intro.classList.add("active")
+        SpotifyIntroduction()
+
       }
     });
 
@@ -228,7 +245,9 @@ function preload() {
 const songFlex = document.createElement("div");
 songFlex.classList.add("song-flex");
 songFlex.classList.add("genre-" + Genre.replace(/\s|\/|-/g, "_").toLowerCase());
-const yearVisualHeight = 850; // total visual height per year block (adjust as needed)
+// const yearVisualHeight = 1010; // total visual height per year block (adjust as needed)
+
+const yearVisualHeight = (h-157.5); // total visual height per year block (adjust as needed)
 const genreHeight = (genre_length / year_length) * yearVisualHeight;
 const songHeight = genreHeight / genre_length;
 

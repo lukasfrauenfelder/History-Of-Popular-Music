@@ -12,6 +12,236 @@ html, body {
   right: 40px;
 }
 
+.bold-title{
+  font-weight: bold;
+}
+
+#spotifyIntro{
+  position: fixed;
+  top: 105px;
+  right: -18px;
+  background: #000000;
+  width: 258px;
+  height: 135px;
+  z-index: 1000;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  opacity: 0;
+  pointer-events: none
+}
+#spotifyIntro.active{
+  opacity: 1;
+}
+#spotifyIntro.active.logedIn{
+  opacity: 0;
+}
+
+#spotifyIntro .IntroBanner{
+  position: relative;
+  top: -23px;
+  right: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  outline: 1px solid black;
+  width: 231px;
+  border-radius: 20px;
+  padding: 26px;
+  padding-bottom: 88px;
+  background: white;
+  transition: all 0.3s ease;
+
+}
+#spotifyIntro .next a{
+      top: -107px;
+}
+
+#spotifyIntro.active .loginButton a{
+    top: -99px;
+    padding-inline: 21px;
+    right: -18px;
+    pointer-events: all ;
+}
+
+#spotifyIntro .loginButton a:hover{
+    background-color: #f4f4f4;
+}
+
+
+#Intro{
+  position: fixed;
+  top: 105px;
+  right: -18px;
+  background: #000000;
+  width: 258px;
+  height: 73px;
+  z-index: 1000;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+#Intro.active{
+  opacity: 1;
+   pointer-events: all;
+}
+.legendeContent.genre-rnb_soul.active {
+  /* background-color: #dadada; */
+  animation: blinks 2s infinite;;
+}
+
+
+#Intro .IntroBanner{
+  position: relative;
+  top: -23px;
+  right: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  outline: 1px solid black;
+  width: 300px;
+  border-radius: 20px;
+  padding: 26px;
+  background: white;
+  transition: all 0.3s ease;
+
+}
+
+#Intro.active.scroll{
+  position: fixed;
+  top: 105px;
+  right: -18px;
+  background: #000000;
+  width: 258px;
+  height: 274px;
+  z-index: 1000;
+  border-radius: 20px;
+}
+#Intro.active.scroll .IntroBanner {
+  position: relative;
+  top: -23px;
+  right: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  outline: 1px solid black;
+  width: 300px;
+  border-radius: 20px;
+  padding-bottom: 225px;
+  /* padding-top: 126px; */
+  background: white;
+
+}
+.scrollInfo{
+  opacity: 0;
+  transition: all 0.3s ease;
+  transition-delay: 0.3s;
+}
+.scrollInfo img{
+  height: 120px;
+  position: fixed;
+  right: 80px;
+  top: 210px;  
+}
+.scrollInfo.active{
+  opacity: 1;
+}
+
+.right-arrow {
+  transform: rotateZ(-90deg);
+  position: relative;
+  top: -294px;
+  right: -140px;
+  width: 0;
+  height: 30px;
+  border: 2px solid;
+  border-radius: 2px;
+  z-index: 1001;
+  animation: jumpInfiniteRight 3s infinite;
+}
+
+.left-arrow {
+  transform: rotateZ(90deg);
+  position: relative;
+  top: -260px;
+  right: -94px;
+  width: 0;
+  height: 30px;
+  border: 2px solid;
+  border-radius: 2px;
+  z-index: 1001;
+  animation: jumpInfinite 3s infinite;
+}
+.right-arrow::after,
+.left-arrow:after {
+  content: " ";
+  position: absolute;
+  top: 12px;
+  left: -10px;
+  width: 16px;
+  height: 16px;
+  border-bottom: 4px solid;
+  border-right: 4px solid;
+  border-radius: 4px;
+  transform: rotateZ(45deg);
+}
+
+@keyframes jumpInfinite {
+  0% {
+    margin-left: 0;
+  }
+  50% {
+    margin-left: 20px;
+  }
+  100% {
+    margin-left: 0;
+  }
+}
+@keyframes jumpInfiniteRight {
+  0% {
+    margin-left: 0;
+  }
+  50% {
+    margin-left: -20px;
+  }
+  100% {
+    margin-left: 0;
+  }
+}
+
+@keyframes blinks {
+  0% {
+    background-color: rgb(255, 255, 255);
+    /* color: black; */
+  }
+  50% {
+    background-color: rgb(201, 201, 201);
+    /* color: white; */
+    /* outline: 1px solid black; */
+  }
+  100% {
+    background-color: rgb(255, 255, 255);
+    /* color: black; */
+  }
+}
+
+.next a{
+  font-family: Arial, Helvetica, sans-serif;
+  outline: 1px solid black;
+  color: #000000;
+  padding: 2px;
+  position: relative;
+  top: -69px;
+  left: 156px;
+  font-size: 16px;
+  text-decoration: none;
+  padding-inline: 23px;
+  z-index: 200;
+  margin: 0;
+  width: fit-content;
+}
+.next a:hover{
+  background-color: #000000;
+  font-weight: bold;
+  color: white;
+
+}
+
+
 #infoBox,
 #infoBox * {
   pointer-events: auto;
@@ -32,7 +262,15 @@ html, body {
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
-  /* display: none; */
+  display: none;
+}
+#infoBox.active{
+  opacity: 1;
+  z-index: 120;
+  pointer-events: auto;
+  background-color: rgb(255, 255, 255);
+  padding-inline: 0px;
+  display: block;
 }
 
 #Hintergrund {
@@ -46,8 +284,12 @@ html, body {
   position: fixed;
   transition: opacity 0.5s ease;
   pointer-events: none;
+  z-index: -1;
   padding: 36px;
   font-size: 14pt;
+}
+#Hintergrund.active{
+  pointer-events: all;
 }
 #Hintergrund p{
   font-size: 14pt;
@@ -75,7 +317,7 @@ html, body {
 .loginButton a:hover,
 .emotionButtonInfo a:hover,
 .genreButtonInfo a:hover{
-  background: #dbdbdb;
+  background-color: #f4f4f4;
 }
 
 
@@ -89,6 +331,16 @@ html, body {
 .genreText{
   position: relative;
   padding-top: 85px;
+}
+
+.songTitle{
+  position: fixed;
+  top: -3px;
+  right: 125px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  /* text-transform: inherit; */
+  font-style: italic;
 }
 
 .loginButton a{
@@ -109,13 +361,7 @@ html, body {
   padding-top: 40px;
 }
 
-#infoBox.active{
-  opacity: 1;
-  z-index: 120;
-  pointer-events: auto;
-  background-color: rgb(255, 255, 255);
-  padding-inline: 0px;
-}
+
 
 
 
@@ -326,13 +572,23 @@ body.genre-selected .faded {
   z-index: 1000;
   transform: translateY(-100%);
   /* top: -11px; */
-
+  outline: 1px solid black;
 }
 
 .song-link.rect-mode:hover .hover-details {
   display: block;
   opacity: 1;
   font-size: 12px;
+  z-index: 1000;
+  position:absolute;
+}
+
+.hover-details:hover{
+  display: block;
+  opacity: 1;
+  font-size: 12px;
+  z-index: 10;
+
 }
 
 
