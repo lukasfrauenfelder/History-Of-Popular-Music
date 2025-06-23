@@ -15,12 +15,12 @@
 
     if (isEmotionView) {
       console.log("active")
-      document.write('<link rel="stylesheet" type="text/css" href="Emotions_secondTry/style.css"/>');
-      document.write('<script src="Emotions_secondTry/just_writeOut.js" defer><\/script>');
+      document.write('<link rel="stylesheet" type="text/css" href="/Emotions_secondTry/style.css"/>');
+      document.write('<script src="/Emotions_secondTry/just_writeOut.js" defer><\/script>');
     } else {
       console.log("active")
-      document.write('<link rel="stylesheet" type="text/css" href="Genre/style_white.css" />');
-      document.write('<script src="Genre/just_writeOut.js" defer><\/script>');
+      document.write('<link rel="stylesheet" type="text/css" href="/Genre/style_white.css" />');
+      document.write('<script src="/Genre/just_writeOut.js" defer><\/script>');
     }
   }
      
@@ -29,15 +29,38 @@
   <title>History of Popular Music</title>
   <script src="https://sdk.scdn.co/spotify-player.js"></script>
 
+  <div id="Intro">
+    <p class="IntroBanner"></p>
+    <p class="next">
+      <a href="#" id="nextButton">next</a>
+    </p>
+    <div class="scrollInfo">
+      <div class="left-arrow"></div>
+      <div class="right-arrow"></div>
+      <img src="/maus.png" alt="">
+    </div>
+  </div>
+
+
+  <div id="spotifyIntro">
+    <p class="IntroBanner"><span class="bold-title">To play music:</span> Use the provided account and confirm the following steps.</p>
+    <p class="loginButton">
+      <a href="#" id="login">Login with Spotify</a>
+    </p>
+  </div>
+
 
 <div class = header>
   <h1>History of Popular Music</h1>
+  <p class="songTitle"></p>
+
+
   <a href="#" id="imageLink">
     <img src="pngItem.png" alt="Description" />
   </a>
   <div id="infoBox" >
     <div id="Hintergrund">
-    <p>"History of Popular Music" is an interactive data visualization that explores the evolution of popular music between 1965 and 2010. Based on the Billboard Hot 100, it reveals how genres and emotional content in song lyrics have changed over the decades. The goal of the visualization is not only to highlight trends over time but also to allow users to discover individual songs and artists behind the data</p>
+    <p><span class="bold-title">History of Popular Music</span> is an interactive data visualization that explores the evolution of popular music between 1965 and 2010. Based on the Billboard Hot 100, it reveals how genres and emotional content in song lyrics have changed over the decades. The goal of the visualization is not only to highlight trends over time but also to allow users to discover individual songs and artists behind the data</p>
     <!-- Move these two lines here: -->
     <p class="genreButtonInfo">
       <a href="#" id="genreButton">Genre</a>
@@ -46,16 +69,14 @@
     <p class="emotionButtonInfo">
       <a href="#" id="emotionButton">Emotions</a>
     </p>
-    <p class="genreText">This visualization sorts songs into stylistic categories such as Rock, Hip-Hop, Pop, or Jazz, and shows when these styles were especially popular. Click the legend to select individual genres.
+    <p class="genreText">This visualization assigns songs to different genres such as rock, hip-hop, pop, or jazz and shows during which periods these genres were particularly popular.<br><br>The number of songs varies from year to year due to missing song data. In addition, genre classification is based on AI-assisted audio analysis and may contain occasional inaccuracies. The underlying data comes from the study "The Evolution of Popular Music" by Mauch et al.</p>
+    <p class="emotionText">The emotional impact of each <span class="bold-title">song's lyrics</span> was analyzed using AI-based emotion detection. The AI assigns a score between 0 (does not apply at all) and 1 (applies completely) to indicate how strongly a song relates to each of the five emotions.
+      <br><br>
+      The visualization displays the intensity of these emotions over time. As a starting point, the threshold was set to the average of all emotional values across all songs. This reference value helps avoid assigning songs to emotions arbitrarily—after all, with a threshold of 0, every song would match every emotion.
+      <br><br>
+      You can use the slider to adjust the threshold manually. The higher the threshold, the stronger the emotional relevance a song must have to be included. This allows you to easily discover which songs evoke a particular emotion most strongly.</p>
 
-      The genre classification is based on AI-driven audio analysis and may contain inaccuracies. The data comes from the study "The Evolution of Popular Music" by Mauch et al.</p>
-    <p class="emotionText">The lyrics of all songs were analyzed for their emotional impact using an emotional analysis. The AI ​​evaluates the correlation with the given emotion, with a value between 0 (does not apply at all) and 1 (completely applies).
-      The visualization shows the intensity of these five emotions over the entire period. The average value of each emotion was set as the threshold.
-      
-      The threshold can be adjusted as desired using the slider. This makes it easy to find out which songs most strongly evoke an emotion.
-      Individual emotions can be shown or hidden by clicking on the legend.</p>
-
-    <p class="loginText">To play music: agree and confirm</p>
+    <p class="loginText"><span class="bold-title">To play music:</span> Use the provided account <br>and confirm the following steps.</p>
     <!-- <button id="login">Login with Spotify</button> -->
     <p class="loginButton">
       <a href="#" id="login">Login with Spotify</a>
@@ -94,7 +115,7 @@
 <body>
   <script>
     const client_id = '5efc4a0c8c6d453f8bd56a9a46a926f0'; // <-- Ersetze mit deiner Client ID
-    const redirect_uri = 'http://127.0.0.1:8888/callback.html';
+    const redirect_uri = 'http://127.0.0.1:8889/callback.html';
 
     function generateCodeVerifier(length = 128) {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
@@ -141,8 +162,8 @@
     })
   </script>
   <script>
-    function playSong(device_id, token,songUri) {
-      console.log("Spiele ab:", songUri);
+    function playSong(device_id, token,songUri,Title) {
+      console.log("Spiele ab:", Title);
       fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
         method: 'PUT',
         body: JSON.stringify({
@@ -158,13 +179,21 @@
           console.log('Song gestartet!');
            // ✅ Show the play/pause toggle button
             document.getElementById('togglePlay').style.display = "inline-block";
+             // ✅ Force icon states: show pause icon, hide play icon
+          document.getElementById('pauseIcon').style.display = "block";
+          document.getElementById('playIcon').style.display = "none";
+            isPlaying = true
         } else {
           console.error('Fehler beim Starten:', response.statusText);
         }
       });
+
+      const Soong = document.querySelector(".songTitle");
+      Soong.textContent = Title
     }
 
     window.playSong = playSong;
+    // window.SpotifyIntroduction = SpotifyIntroduction
   
     window.onSpotifyWebPlaybackSDKReady = () => {
       const token = localStorage.getItem('spotify_access_token');
@@ -181,12 +210,18 @@
   
       player.addListener('ready', ({ device_id }) => {
         console.log('Player bereit mit Device ID:', device_id);
-        
         window.spotifyDeviceId = device_id;
         window.spotifyToken = token;
-        // 🎯 Hier Song starten
-        // playSong(device_id, token);
-      });
+    
+        const Intro = document.getElementById("spotifyIntro");
+        Intro.classList.add("logedIn")
+
+          // Entferne Klasse nach 30 Minuten (1800000 ms)
+        setTimeout(() => {
+          Intro.classList.remove("logedIn");
+          console.log("logedIn-Klasse nach 30 Minuten entfernt");
+        }, 30 * 60 * 1000);
+        });
   
       // Fehlerbehandlung ...
       player.connect();
@@ -225,10 +260,11 @@
     e.preventDefault(); // verhindert Navigation
 
     const infoBox = document.getElementById("infoBox");
-    
+    const Hintergrund = document.getElementById("Hintergrund");
 
     // Toggle "active" class
     infoBox.classList.toggle("active");
+    Hintergrund.classList.toggle("active")
     
   });
   </script>
@@ -243,11 +279,11 @@
   button.addEventListener("click", () => {
     isPlaying = !isPlaying;
 
-    // playIcon.style.display = isPlaying ? "none" : "block";
-    // pauseIcon.style.display = isPlaying ? "block" : "none";
+    playIcon.style.display = isPlaying ? "none" : "block";
+    pauseIcon.style.display = isPlaying ? "block" : "none";
 
-    playIcon.style.display = isPlaying ? "block" : "none";
-    pauseIcon.style.display = isPlaying ? "none" : "block";
+    // playIcon.style.display = isPlaying ? "block" : "none";
+    // pauseIcon.style.display = isPlaying ? "none" : "block";
 
 
     // Optionally: trigger your actual play/pause logic
@@ -301,6 +337,126 @@
     
   });
 </script>
+
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const Intro = document.getElementById("Intro");
+    const firstText = document.querySelector(".IntroBanner")
+    const scrlInfo = document.querySelector(".scrollInfo")
+
+    // const nextButton = document.querySelector(".next");
+    const nextButton = document.getElementById("nextButton");
+    
+    firstText.textContent = "Click to Filter"
+
+
+    function waitForElement(selector, callback) {
+    const element = document.querySelector(selector);
+    if (element) {
+      callback(element);
+    } else {
+      setTimeout(() => waitForElement(selector, callback), 100); // check every 100ms
+    }
+  }
+
+  waitForElement(".legendeContent.genre-rnb_soul", (RnBButton) => {
+    // Now safe to use the element
+    console.log(RnBButton)
+    RnBButton.classList.add("active")
+  });
+
+    let inactivityTimer;
+
+    function showIntro() {
+      
+      
+      firstText.textContent = "Click to Filter"
+      Intro.classList.remove("scroll")
+      nextButton.textContent = "next"
+      Intro.classList.add("active");
+    }
+
+    function resetInactivityTimer() {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        scrlInfo.classList.remove("active")
+        showIntro();
+        const RnBButton = document.querySelector(".legendeContent.genre-rnb_soul");
+        RnBButton.classList.add("active")
+
+
+      }, 60000); // 60 seconds of inactivity (adjust as needed)
+    }
+
+    // Start inactivity detection
+    ['mousemove', 'keydown', 'scroll', 'click'].forEach(event => {
+      document.addEventListener(event, resetInactivityTimer);
+    });
+
+    // Show it the first time (on initial load)
+    showIntro();
+    resetInactivityTimer();
+
+    // const leg = document.getElementById("Legende");
+    
+    Intro.classList.add("active")
+    if (Intro.classList.contains("active")) {
+        // RnBButton.style.backgroundColor = "grey";
+    } 
+
+    nextButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (scrlInfo.classList.contains("active")) {
+      Intro.classList.remove("active")
+      scrlInfo.classList.remove("active")
+    }else{
+ 
+      const RnBButton = document.querySelector(".legendeContent.genre-rnb_soul");
+      RnBButton.classList.remove("active")
+    
+      
+      nextButton.textContent = "got it"
+      firstText.textContent = "Scroll to Zoom"
+      scrlInfo.classList.add("active")
+      Intro.classList.add("scroll")
+    }
+  });
+
+
+    
+  });
+</script>
+
+<script>
+  function SpotifyIntroduction(){
+    console.log("hello World")
+    let inactivityTimer
+    
+
+    // function resetInactivityTimer() {
+    //   clearTimeout(inactivityTimer);
+    //   inactivityTimer = setTimeout(() => {
+    //     showIntro();
+        
+
+    //   }, 60000); // 60 seconds of inactivity (adjust as needed)
+    // }
+    
+    // Show it the first time (on initial load)
+    showIntro();
+    // resetInactivityTimer();
+
+    function showIntro(){
+    const Intro = document.getElementById("spotifyIntro");
+    Intro.classList.add("active")
+
+
+    }
+
+  }
+  window.SpotifyIntroduction = SpotifyIntroduction;
+</script>
+
 
 </body>
 </html>
