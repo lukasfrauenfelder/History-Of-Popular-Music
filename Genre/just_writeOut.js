@@ -1,8 +1,12 @@
 // const slidertext = document.querySelector(".txt");
 const width = window.innerWidth;
 const h = window.innerHeight;
-console.log(h)
 var songList = document.getElementById("songList");
+
+var style = window.getComputedStyle(songList);
+var padding = parseInt(style.paddingLeft)
+var topValue = parseInt(style.top)
+console.log(topValue, padding)
 const Legende = document.getElementById("Legende");
 songList.innerHTML = ""; // Clear previous entries
 Legende.innterHTML = "";
@@ -12,11 +16,61 @@ let currentEmotions = null;
 let mouseXInSongList = 0;
 // const minWidth = 48.25;
 // const minWidth = 38.25;
-const minWidth = (width-70)/45
+const minWidth = (width-padding*2)/45
 const maxWidth = 500;
 const hundert = 500;
 let blockWidth = minWidth; // starting width
 let selectedGenre = "all"; // Declare this globally at the top
+
+console.log(blockWidth)
+
+let initialPinchDistance = null;
+let lastBlockWidth = blockWidth;
+let pinchCenterX = 0;
+
+songList.addEventListener("touchstart", (e) => {
+  if (e.touches.length === 2) {
+    // Abstand der Finger messen
+    initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
+    
+    // Mittelpunkt der Geste bestimmen (relativ zu songList)
+    const bounds = songList.getBoundingClientRect();
+    pinchCenterX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - bounds.left;
+  }
+});
+
+songList.addEventListener("touchmove", (e) => {
+  if (e.touches.length === 2 && initialPinchDistance) {
+    e.preventDefault();
+
+    const newDistance = getDistance(e.touches[0], e.touches[1]);
+    const scale = newDistance / initialPinchDistance;
+
+    // Neues Block-Width berechnen
+    blockWidth = lastBlockWidth * scale;
+    blockWidth = Math.max(minWidth, Math.min(maxWidth, blockWidth));
+
+    // Mausposition für deine Logik simulieren
+    mouseXInSongList = pinchCenterX;
+
+    updateBlockWidths(blockWidth);
+  }
+}, { passive: false });
+
+//checke nitt
+songList.addEventListener("touchend", (e) => {
+  if (e.touches.length < 2) {
+    lastBlockWidth = blockWidth; 
+    initialPinchDistance = null;
+  }
+});
+
+function getDistance(t1, t2) {
+  const dx = t1.clientX - t2.clientX;
+  const dy = t1.clientY - t2.clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
 
 songList.addEventListener("wheel", (e) => {
   e.preventDefault(); // prevent horizontal scroll
@@ -247,7 +301,9 @@ songFlex.classList.add("song-flex");
 songFlex.classList.add("genre-" + Genre.replace(/\s|\/|-/g, "_").toLowerCase());
 // const yearVisualHeight = 1010; // total visual height per year block (adjust as needed)
 
-const yearVisualHeight = (h-157.5); // total visual height per year block (adjust as needed)
+// const yearVisualHeight = (h-157.5); // total visual height per year block (adjust as needed)
+const yearVisualHeight = (h-(topValue+padding+30)); // total visual height per year block (adjust as needed)
+
 const genreHeight = (genre_length / year_length) * yearVisualHeight;
 const songHeight = genreHeight / genre_length;
 

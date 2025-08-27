@@ -3,6 +3,8 @@ html, body {
   padding: 0;
   background-color: rgb(255, 255, 255);
   
+    -webkit-text-size-adjust: 100%; /* stops Safari from “helping” */
+
 }
 
 #imageLink img{
@@ -263,6 +265,7 @@ html, body {
   transition: opacity 0.3s ease;
   pointer-events: none;
   display: none;
+  
 }
 #infoBox.active{
   opacity: 1;
@@ -297,24 +300,47 @@ html, body {
   pointer-events: none;
 }
 
+.genreButtonInfo,
+.emotionButtonInfo {
+  display: inline-block;   /* make them behave like inline buttons */
+  margin-right: 10px;      /* space between them */
+}
+
+.buttonsWrapper {
+  margin-top: 45px;        /* space above */
+  gap: 8px;
+  display: inline-flex;
+}
+
 .emotionButtonInfo a,
 .genreButtonInfo a{
   font-family: Arial, Helvetica, sans-serif;
   outline: 1px solid black;
   color: #000000;
   padding: 7px;
-  position: fixed;
-  top: 284px;
-  left: 35px;
   font-size: 20px;
   text-decoration: none;
   padding-inline: 42px;
   z-index: 200;
 }
+/*
 .emotionButtonInfo a{
   left: 183px;
 }
-.loginButton a:hover,
+
+*/
+a {
+  color: rgb(0, 0, 0);        /* link color */
+  text-decoration: underline; /* underline (default) */
+  text-underline-offset: 4px;       /* push underline further down */
+}
+
+a:hover {
+  color: rgb(0, 0, 0);     /* color on hover */
+  text-decoration: none; 
+}
+
+.loginButtonInfo a:hover,
 .emotionButtonInfo a:hover,
 .genreButtonInfo a:hover{
   background-color: #f4f4f4;
@@ -330,7 +356,7 @@ html, body {
 .emotionText,
 .genreText{
   position: relative;
-  padding-top: 85px;
+  padding-top: 18px;
 }
 
 .songTitle{
@@ -343,13 +369,20 @@ html, body {
   font-style: italic;
 }
 
-.loginButton a{
+.loginButtonInfo{
+  display: inline-block;
+}
+
+.buttonSpacerLogin{
+  margin-top: 15px;
+  margin-bottom: 126px;
+}
+.loginButton a,
+.loginButtonInfo a{
   font-family: Arial, Helvetica, sans-serif;
   outline: 1px solid black;
   color: #000000;
   padding: 7px;
-  position: fixed;
-  top: 20px;
   
   font-size: 20px;
   text-decoration: none;
@@ -357,6 +390,7 @@ html, body {
   z-index: 200;
 
 }
+
 .loginText{
   padding-top: 40px;
 }
@@ -384,6 +418,7 @@ h1{
   margin-top: 4px;
   border-bottom: 1px solid black;
   text-transform: uppercase;
+  
 }
 
 .genreButton a{
@@ -481,22 +516,22 @@ body.genre-selected .faded {
 
 
 #songList {
-  /* outline: 1px solid white; */
-  display: flex;
-  flex-direction: row;
-  /* justify-content: center;  */
-  top: 100px;
-  left: 20;
-  right: 0;
-  padding-left: 35px;
-  padding-top: 10px;
-  overflow-x: auto;
-  max-height: 96vh;
-  background-color: rgba(255, 255, 255, 0.8);
-  z-index: 2;
-  text-align: left;
-  padding-bottom: 10px;
- 
+    /* outline: 1px solid white; */
+    display: flex;
+
+    flex-direction: row;
+    /* justify-content: center; */
+    top: 100px;
+    left: 20;
+    right: 0;
+    padding-left: 35px;
+    padding-top: 10px;
+    overflow-x: auto;
+    max-height: 96vh;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 2;
+    text-align: left;
+    padding-bottom: 10px;
   
 }
 
@@ -519,6 +554,8 @@ body.genre-selected .faded {
   padding: 2px;
   border-radius: 10px;
   color: #000000;
+  font-size: 13px !important;
+
   /* outline: 1px solid; */
 }
 
@@ -527,8 +564,9 @@ body.genre-selected .faded {
   padding: 2px;
   outline: 1px solid white;
   text-align: center;
-  font-size: 13px;
   margin: 0;
+  overflow: hidden;
+  font-size: 13px !important;
 }
 
 .song-link {
@@ -537,6 +575,10 @@ body.genre-selected .faded {
   display: block;
   /* padding: 3px 6px; */
   transition: background-color 0.2s ease, color 0.2s ease, font-size 0.3s ease;
+}
+
+.outlines_mobile{
+display: none;
 }
 
 
@@ -812,3 +854,315 @@ body.genre-selected .faded {
   background-color: #752231;
 }
 
+@media (max-width: 1535px) {
+
+  .header {
+    height: 166px;
+}
+  #Legende {
+    position: fixed;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-rows: auto;
+    grid-template-rows: repeat(2, auto) !important;
+    gap: 7px 6vw;
+    z-index: 10;
+    top: 116px;
+    right: 30px;
+    left: 35px;
+  }
+
+  #Intro {
+    position: fixed;
+    top: 175px;
+  }
+
+  #togglePlay {
+    position: fixed;
+    top: 55px;
+    right: 30px;
+}
+.songTitle {
+  position: fixed;
+  top: 48px;
+  right: 75px;
+}
+
+
+  #songList {
+    /* outline: 1px solid white; */
+    top: 158px!important;
+    
+  }
+
+.outlines_mobile {
+  position: relative;
+  top: 38px;
+  width: auto;
+  height: 119px;
+  color: black;
+  z-index: 0;
+  /* border-bottom: 1px solid black; */
+  border-top: 1px solid black;
+  display: block;
+}
+}
+
+@media (max-width: 1180px) {
+  #Legende {
+    position: fixed;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-rows: auto;
+    grid-template-rows: repeat(2, auto) !important;
+    gap: 7px 15px;
+    z-index: 10;
+    top: 116px;
+    right: 30px;
+    left: 35px;
+  }
+}
+
+@media (max-width: 844px) {
+
+  .header {
+    height: 124px;
+  }
+  #Legende {
+    position: fixed;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-rows: auto;
+    grid-template-rows: repeat(2, auto) !important;
+    gap: 7px 15px;
+    z-index: 10;
+    top: 77px;
+    right: 22px;
+    left: 15px;
+}
+
+  #Intro {
+    position: fixed;
+    top: 126px;
+  }
+
+
+  h1{
+    font-size: large;
+    padding-left: 15px;
+  }
+  #imageLink img {
+    top: 3.5px;
+    right: 15px;
+    width: 18px;
+  }
+
+  #togglePlay {
+    position: fixed;
+    top: 29px;
+    right: 1px;
+}
+
+.songTitle {
+  position: fixed;
+  top: 25px;
+  right: 40px;
+  font-size: 13px;
+}
+
+  #songList {
+    /* outline: 1px solid white; */
+    top: 116px!important;
+    padding-left: 15px;
+    
+  }
+
+  .genreButton a {
+    font-family: Arial, Helvetica, sans-serif;
+    outline: 1px solid black;
+    color: #000000;
+    padding: 3px;
+    position: fixed;
+    top: 34px;
+    left: 15px;
+    font-size: 16px;
+    text-decoration: none;
+    padding-inline: 15px;
+}
+.emotionButton a {
+  font-family: Arial, Helvetica, sans-serif;
+  outline: 1px solid black;
+  color: #000000;
+  padding: 3px;
+  position: fixed;
+  top: 34px;
+  left: 97px;
+  font-size: 16px;
+  text-decoration: none;
+  padding-inline: 15px;
+}
+
+.outlines_mobile {
+  position: relative;
+  top: 28px;
+  width: auto;
+  height: 119px;
+  color: black;
+  z-index: 0;
+  /* border-bottom: 1px solid black; */
+  border-top: 1px solid black;
+  display: block;
+}
+
+#infoBox {
+  top: 30px;
+  left: 0px;
+}
+#Hintergrund {
+  top: 26px;
+  left: 0;
+  font-family: sans-serif;
+  height: 100%;
+  width: 380px;
+  position: fixed;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 1;
+  padding: 15px;
+  padding-bottom: 80px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  outline: none;
+  border-right: 1px solid black;
+}
+#Hintergrund p{
+  font-size: 12pt;
+  margin: auto;
+  pointer-events: none;
+}
+
+.buttonsWrapper {
+  margin-top: 25px;
+  gap: 8px;
+  display: inline-flex
+;
+}
+
+
+
+.emotionText, .genreText {
+  position: relative;
+  padding-top: 16px;
+}
+
+}
+
+
+@media (max-width: 650px) {
+
+  .header {
+    height: 197px;
+}
+  #Legende {
+    position: fixed;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-rows: auto;
+    grid-template-rows: repeat(5, auto) !important;
+    gap: 7px 15px;
+    z-index: 10;
+    top: 80px;
+    right: 10px;
+    left: 15px;}
+  
+  #Intro {
+    position: fixed;
+    top: 175px;
+  }
+
+
+  h1{
+    font-size: large;
+    padding-left: 15px;
+  }
+  #imageLink img {
+    top: 3.5px;
+    right: 15px;
+    width: 18px;
+  }
+
+  #togglePlay {
+    position: fixed;
+    top: 29px;
+    right: 1px;
+}
+
+.songTitle {
+  position: fixed;
+  top: 25px;
+  right: 40px;
+  font-size: 13px;
+}
+
+  #songList {
+    /* outline: 1px solid white; */
+    top: 189px!important;
+    padding-left: 15px;
+    
+  }
+
+  .genreButton a {
+    font-family: Arial, Helvetica, sans-serif;
+    outline: 1px solid black;
+    color: #000000;
+    padding: 3px;
+    position: fixed;
+    top: 34px;
+    left: 15px;
+    font-size: 16px;
+    text-decoration: none;
+    padding-inline: 15px;
+}
+.emotionButton a {
+  font-family: Arial, Helvetica, sans-serif;
+  outline: 1px solid black;
+  color: #000000;
+  padding: 3px;
+  position: fixed;
+  top: 34px;
+  left: 97px;
+  font-size: 16px;
+  text-decoration: none;
+  padding-inline: 15px;
+}
+
+.outlines_mobile {
+  position: relative;
+  top: 28px;
+  width: auto;
+  height: 119px;
+  color: black;
+  z-index: 0;
+  /* border-bottom: 1px solid black; */
+  border-top: 1px solid black;
+  display: block;
+}
+
+#Hintergrund {
+  top: 26px;
+  left: 0;
+  font-family: sans-serif;
+  height: 100%;
+  width: auto;
+  position: fixed;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: -1;
+  padding: 15px;
+  padding-bottom: 80px;
+  overflow-y: auto;   /* vertical scroll when content overflows */
+  overflow-x: hidden; /* optional: prevent horizontal scroll */
+  border-right: none;
+}
+
+}
