@@ -6,18 +6,78 @@ const Legende = document.getElementById("Legende");
 songList.innerHTML = ""; // Clear previous entries
 Legende.innterHTML = "";
 
+var style = window.getComputedStyle(songList);
+var padding = parseInt(style.paddingLeft)
+var topValue = parseInt(style.top)
+console.log(topValue, padding)
+
+
 let slider;
 let cnv
 let currentEmotions = null;
 let mouseXInSongList = 0;
 // const minWidth = 48.25;
 // const minWidth = 38.25;
-const minWidth = (width-70)/45
+const minWidth = (width-padding*2)/45
+
+console.log(minWidth)
+
+
 
 const maxWidth = 500;
 const hundert = 500;
 let blockWidth = minWidth; // starting width
 let selectedEmotion = "all"; // Declare this globally at the top
+
+let initialPinchDistance = null;
+let lastBlockWidth = blockWidth;
+let pinchCenterX = 0;
+
+
+songList.addEventListener("touchstart", (e) => {
+  if (e.touches.length === 2) {
+    // Abstand der Finger messen
+    initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
+    
+    // Mittelpunkt der Geste bestimmen (relativ zu songList)
+    const bounds = songList.getBoundingClientRect();
+    pinchCenterX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - bounds.left;
+  }
+});
+
+songList.addEventListener("touchmove", (e) => {
+  if (e.touches.length === 2 && initialPinchDistance) {
+    e.preventDefault();
+
+    const newDistance = getDistance(e.touches[0], e.touches[1]);
+    const scale = newDistance / initialPinchDistance;
+
+    // Neues Block-Width berechnen
+    blockWidth = lastBlockWidth * scale;
+    blockWidth = Math.max(minWidth, Math.min(maxWidth, blockWidth));
+
+    // Mausposition für deine Logik simulieren
+    mouseXInSongList = pinchCenterX;
+
+    updateBlockWidths(blockWidth);
+  }
+}, { passive: false });
+
+//checke nitt
+songList.addEventListener("touchend", (e) => {
+  if (e.touches.length < 2) {
+    lastBlockWidth = blockWidth; 
+    initialPinchDistance = null;
+  }
+});
+
+function getDistance(t1, t2) {
+  const dx = t1.clientX - t2.clientX;
+  const dy = t1.clientY - t2.clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+
 
 
 songList.addEventListener("wheel", (e) => {
@@ -66,40 +126,54 @@ function preload() {
     console.log(data)
     // noCanvas()
     // cnv = createCanvas(150,150)
-    emotionValueDisplay = document.createElement("h3");
+    // Create the container once
+    let sliderContainer = document.createElement("div");
+    sliderContainer.id = "sliderContainer";
+    document.body.appendChild(sliderContainer);
+
+    // Create labels (regular DOM)
+    let emotionValueDisplay = document.createElement("h3");
     emotionValueDisplay.id = "emotionValueDisplay";
-    document.body.appendChild(emotionValueDisplay);
 
-    min = document.createElement("h3");
+    let min = document.createElement("h3");
     min.id = "min";
-    document.body.appendChild(min);
+    min.textContent = "mean ⌀"
 
-    max = document.createElement("h3");
+    let max = document.createElement("h3");
     max.id = "max";
-    document.body.appendChild(max);
+    max.textContent = "max"
 
-    genreDropdown = createSelect();
-    genreDropdown.position(-20, -50);
-    genreDropdown.option('all');
-    for (let g of genreOrder) {
-      genreDropdown.option(g);
-    }
+    // Append them into the container
+    sliderContainer.appendChild(emotionValueDisplay);
+    sliderContainer.appendChild(min);
+    sliderContainer.appendChild(max);
 
-    emotionDropdown = createSelect();
-    emotionDropdown.position(1690, 70);
-    emotionDropdown.option('all');
-    for (let e of emotionOrder) {
-      emotionDropdown.option(e);
-    }
+
+
+    // genreDropdown = createSelect();
+    // genreDropdown.position(-20, -50);
+    // genreDropdown.option('all');
+    // for (let g of genreOrder) {
+    //   genreDropdown.option(g);
+    // }
+
+    // emotionDropdown = createSelect();
+    // emotionDropdown.position(1690, 70);
+    // emotionDropdown.option('all');
+    // for (let e of emotionOrder) {
+    //   emotionDropdown.option(e);
+    // }
     
-    genreDropdown.changed(renderSongList); // redraw when selection changes
-    emotionDropdown.changed(renderSongList)
+    // genreDropdown.changed(renderSongList); // redraw when selection changes
+    // emotionDropdown.changed(renderSongList)
 
     slider = createSlider(0,80,0)
     // slider.position(1090,52)
     slider.style('z-index', '100'); // 👈 Set z-index here
      // Add a class
     slider.class('my-slider');
+
+    slider.parent(sliderContainer);   // 👈 same trick for the slider
 
     slider.input(() => {
     
@@ -131,7 +205,7 @@ function preload() {
     songList.innerHTML = ""; 
     Legende.innerHTML = "";
 
-    selectedGenre = genreDropdown.value(); // get currently selected genre
+    // selectedGenre = genreDropdown.value(); // get currently selected genre
     // selectedEmotion = emotionDropdown.value()
     Schwellenwert = map(slider.value(),0,80,0,0.8)
     
@@ -143,38 +217,7 @@ function preload() {
       joy: 0.199+Schwellenwert
     };
 
-    // const emotionThresholds = {
-    //   sadness: 0.240+Schwellenwert,
-    //   anger: 0.160+Schwellenwert,
-    //   fear: 0.189+Schwellenwert,
-    //   disgust: 0.111+Schwellenwert,
-    //   joy: 0.297+Schwellenwert
-    // };
-
-
-
-    // for (e in emotionOrder){
-    //   let emotion = emotionOrder[e]
-    //   const legendeflex = document.createElement("span");
-    //   legendeflex.classList.add("emotion-group", `emotion-${emotion}`);
-
-    //   const legendeContent = document.createElement("p");
-    //   legendeContent.classList.add("legendeContent");
-    //   legendeContent.textContent = emotion
-    //   legendeContent.classList.add(`emotion-${emotion}`);
-      
-
-    //   const emotionvalue = document.createElement("p");
-    //   emotionvalue.classList.add("value");
-    //   emotionvalue.textContent = emotionThresholds[emotion].toFixed(2);
-    //   // emotionvalue.classList.add("emotion-group", `emotion-${emotion}`);
-
-    //   legendeflex.appendChild(emotionvalue)
-
-    //   legendeflex.appendChild(legendeContent)
-    //   Legende.appendChild(legendeflex)
-    // }
-
+    
     for (e in emotionOrderLegende){
       let emotion = emotionOrderLegende[e] 
       const legendeflex = document.createElement("span");
@@ -318,7 +361,10 @@ function preload() {
   yearHeader.appendChild(yearHeaderContent);
   yearDiv.appendChild(yearHeader);
   
-  let emotionBandHeight = ((h-157.5)/5.7);
+  let emotionBandHeight = (h-(topValue+padding+30))/5.7; // total visual height per year block (adjust as needed)
+
+
+  // let emotionBandHeight = ((h-157.5)/5.7);
   console.log(emotionBandHeight)
   // let emotionBandHeight = 180; // space per emotion
   // let emotionBandHeight = 150; // space per emotion
@@ -327,6 +373,19 @@ function preload() {
   let bandTop = 60; // starting Y position for drawing emotions
   let rh = 3
 
+  if(padding === 15){
+    emotionBandHeight = (h-(topValue+padding+30))/7.5; // total visual height per year block (adjust as needed)
+    rh = 1.23
+    bandTop = 30; 
+    emotionSpacing = 30;
+
+  }else{
+    emotionBandHeight = (h-(topValue+padding+30))/5.7; // total visual height per year block (adjust as needed)
+    rh = 3
+    bandTop = 60; 
+    emotionSpacing = 20;
+
+  }
   // Add songs
   for (let i = 0; i < emotionOrder.length; i++) {
     let emotion = emotionOrder[i];
@@ -406,6 +465,8 @@ const songFlex = document.createElement("div");
 songFlex.classList.add("song-flex");
 songFlex.classList.add("emotion-" + emotion.replace(/\s|\/|-/g, "_").toLowerCase());
 // songFlex.classList.add("genre-" + Genre.replace(/\s|\/|-/g, "_").toLowerCase());
+
+// const yearVisualHeight = (h-(topValue+padding+30)); // total visual height per year block (adjust as needed)
 
 const yearVisualHeight = 1200; // total visual height per year block (adjust as needed)
 const genreHeight = (genre_length / year_length) * yearVisualHeight;

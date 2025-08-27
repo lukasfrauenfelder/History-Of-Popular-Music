@@ -217,11 +217,40 @@ html, body {
   padding: 36px;
   font-size: 14pt;
 }
+#Hintergrund.active{
+  pointer-events: all;
+}
+
 #Hintergrund p{
   font-size: 14pt;
   margin: auto;
   pointer-events: none;
 }
+
+.genreButtonInfo,
+.emotionButtonInfo {
+  display: inline-block;   /* make them behave like inline buttons */
+  margin-right: 10px;      /* space between them */
+}
+
+.buttonsWrapper {
+  margin-top: 45px;        /* space above */
+  gap: 8px;
+  display: inline-flex;
+}
+
+a {
+  color: rgb(0, 0, 0);        /* link color */
+  text-decoration: underline; /* underline (default) */
+  text-underline-offset: 4px;       /* push underline further down */
+}
+
+a:hover {
+  color: rgb(0, 0, 0);     /* color on hover */
+  text-decoration: none; 
+}
+
+
 
 .emotionButtonInfo a,
 .genreButtonInfo a{
@@ -229,9 +258,6 @@ html, body {
   outline: 1px solid black;
   color: #000000;
   padding: 7px;
-  position: fixed;
-  top: 284px;
-  left: 35px;
   font-size: 20px;
   text-decoration: none;
   padding-inline: 42px;
@@ -256,16 +282,24 @@ html, body {
 .emotionText,
 .genreText{
   position: relative;
-  padding-top: 85px;
+  padding-top: 18px;
 }
 
-.loginButton a{
+
+.loginButtonInfo{
+  display: inline-block;
+}
+
+.buttonSpacerLogin{
+  margin-top: 15px;
+  margin-bottom: 126px;
+}
+.loginButton a,
+.loginButtonInfo a{
   font-family: Arial, Helvetica, sans-serif;
   outline: 1px solid black;
   color: #000000;
   padding: 7px;
-  position: fixed;
-  top: 20px;
   
   font-size: 20px;
   text-decoration: none;
@@ -273,6 +307,7 @@ html, body {
   z-index: 200;
 
 }
+
 .loginText{
   padding-top: 40px;
 }
@@ -332,6 +367,7 @@ h1{
   color: #000000;
 }
 
+.loginButtonInfo a:hover,
 .emotionButton a:hover,
 .genreButton a:hover{
   background-color: #f4f4f4;
@@ -463,13 +499,14 @@ body.genre-selected .faded {
 }
 
 .year-block h3{
-  background-color: rgb(249, 249, 249);
+  
   padding: 2px;
   outline: 0.5px solid rgb(0, 0, 0);
   text-align: center;
   font-size: 13px;
   margin: 0;
   height: 15px;
+  overflow: hidden;
 }
 
 .song-link {
@@ -647,23 +684,6 @@ height: auto;
   background-color: #fbcc10;
 } 
 
-/*
-.artist-name.emotion-sadness{
-  border-left: #077ff0 solid 15px;
-}
-.artist-name.emotion-anger{
-  border-left: #e41a1a solid 15px;
-}
-.artist-name.emotion-disgust{
-  border-left: #36b525 solid 15px;
-}
-.artist-name.emotion-fear{
-  border-left:#9d1ea8 solid 15px;
-}
-.artist-name.emotion-joy{
-  border-left: #fbcc10 solid 15px;
-}
-*/
 
 .song-flex.emotion-sadness{
   border-left: #077ff0 solid 15px;
@@ -702,21 +722,6 @@ height: auto;
   border-left: 15px solid #cccccc;
 }
 
-/* .song-flex.emotion-sadness{
-  color: #066dcd;
-}
-.song-flex.emotion-anger{
-  color: #e41a1a;
-}
-.song-flex.emotion-disgust{
-  color: #36b525;
-}
-.song-flex.emotion-fear{
-  color: #9d1ea8;
-}
-.song-flex.emotion-joy{
-  color: #fbcc10;
-} */
 
 
 
@@ -761,3 +766,389 @@ height: auto;
 }
 
 
+#sliderContainer{
+  
+  opacity: 1;
+}
+
+#sliderContainer.active{
+  
+  opacity: 0;
+
+}
+
+
+
+@media (max-width: 1235px) {
+
+  .header {
+    height: 166px;
+}
+#Legende {
+  position: fixed;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-rows: auto;
+  grid-template-rows: repeat(2, auto);
+  gap: 7px 45px;
+  z-index: 10;
+  top: 116px;
+  right: 40px;
+}
+  #Intro {
+    position: fixed;
+    top: 175px;
+  }
+
+  #togglePlay {
+    position: fixed;
+    top: 55px;
+    right: 30px;
+}
+.songTitle {
+  position: fixed;
+  top: 48px;
+  right: 75px;
+}
+
+
+  #songList {
+    /* outline: 1px solid white; */
+    top: 158px!important;
+    
+  }
+
+.outlines_mobile {
+  position: relative;
+  top: 38px;
+  width: auto;
+  height: 119px;
+  color: black;
+  z-index: 0;
+  /* border-bottom: 1px solid black; */
+  border-top: 1px solid black;
+  display: block;
+}
+
+#emotionValueDisplay {
+  position: fixed;
+  top: 114px;
+  /* right: 562px; */
+  left: 35px;
+  margin: 0;
+  color: rgb(0, 0, 0);
+  z-index: 100;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  width: 100%;
+}
+
+#min,#max{
+  display: none;
+}
+.my-slider {
+  width: 216px;
+  accent-color: #585858;
+  position: fixed;
+  top: 134px;
+  left:35px;
+}
+}
+
+@media (max-width: 1180px) {
+
+}
+
+@media (max-width: 844px) {
+
+  .header {
+    height: 124px;
+  }
+  #Legende {
+    position: fixed;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-rows: auto;
+    grid-template-rows: repeat(2, auto) !important;
+    gap: 7px 25px;
+    z-index: 10;
+    top: 77px;
+    /* right: 15px; */
+    left: 255px;
+}
+
+.my-slider {
+  width: 216px;
+  accent-color: #585858;
+  position: fixed;
+  /* right: 463px; */
+  left: 15px;
+  top: 97px;
+}
+
+  #Intro {
+    position: fixed;
+    top: 126px;
+  }
+
+
+  h1{
+    font-size: large;
+    padding-left: 15px;
+  }
+  #imageLink img {
+    top: 3.5px;
+    right: 15px;
+    width: 18px;
+  }
+
+  #togglePlay {
+    position: fixed;
+    top: 29px;
+    right: 1px;
+}
+
+.songTitle {
+  position: fixed;
+  top: 25px;
+  right: 40px;
+  font-size: 13px;
+}
+
+  #songList {
+    /* outline: 1px solid white; */
+    top: 116px!important;
+    padding-left: 15px;
+    
+  }
+
+  .genreButton a {
+    font-family: Arial, Helvetica, sans-serif;
+    outline: 1px solid black;
+    color: #000000;
+    padding: 3px;
+    position: fixed;
+    top: 34px;
+    left: 15px;
+    font-size: 16px;
+    text-decoration: none;
+    padding-inline: 15px;
+}
+.emotionButton a {
+  font-family: Arial, Helvetica, sans-serif;
+  outline: 1px solid black;
+  color: #000000;
+  padding: 3px;
+  position: fixed;
+  top: 34px;
+  left: 97px;
+  font-size: 16px;
+  text-decoration: none;
+  padding-inline: 15px;
+}
+
+.outlines_mobile {
+  position: relative;
+  top: 28px;
+  width: auto;
+  height: 119px;
+  color: black;
+  z-index: 0;
+  /* border-bottom: 1px solid black; */
+  border-top: 1px solid black;
+  display: block;
+}
+
+#infoBox {
+  top: 30px;
+  left: 0px;
+}
+#Hintergrund {
+  top: 26px;
+  left: 0;
+  font-family: sans-serif;
+  height: 100%;
+  width: 380px;
+  position: fixed;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 1;
+  padding: 15px;
+  padding-bottom: 80px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  outline: none;
+  border-right: 1px solid black;
+}
+#Hintergrund p{
+  font-size: 12pt;
+  margin: auto;
+  pointer-events: none;
+}
+
+.buttonsWrapper {
+  margin-top: 25px;
+  gap: 8px;
+  display: inline-flex
+;
+}
+
+
+
+.emotionText, .genreText {
+  position: relative;
+  padding-top: 16px;
+}
+
+#emotionValueDisplay {
+  position: fixed;
+  top: 79px;
+  /* right: 562px; */
+  left: 15px;
+  margin: 0;
+  color: rgb(0, 0, 0);
+  z-index: 100;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  width: 100%;
+}
+#min,#max{
+  display: none;
+}
+}
+
+
+@media (max-width: 650px) {
+
+  .header {
+    height: 197px;
+}
+  #Legende {
+    position: fixed;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-rows: auto;
+    grid-template-rows: repeat(2, auto) !important;
+    gap: 7px 15px;
+    z-index: 10;
+    top: 80px;
+    right: 10px;
+    left: 15px;}
+  
+  #Intro {
+    position: fixed;
+    top: 175px;
+  }
+
+
+  h1{
+    font-size: large;
+    padding-left: 15px;
+  }
+  #imageLink img {
+    top: 3.5px;
+    right: 15px;
+    width: 18px;
+  }
+
+  #togglePlay {
+    position: fixed;
+    top: 29px;
+    right: 1px;
+}
+
+.songTitle {
+  position: fixed;
+  top: 25px;
+  right: 40px;
+  font-size: 13px;
+}
+
+  #songList {
+    /* outline: 1px solid white; */
+    top: 189px!important;
+    padding-left: 15px;
+    
+  }
+
+  .genreButton a {
+    font-family: Arial, Helvetica, sans-serif;
+    outline: 1px solid black;
+    color: #000000;
+    padding: 3px;
+    position: fixed;
+    top: 34px;
+    left: 15px;
+    font-size: 16px;
+    text-decoration: none;
+    padding-inline: 15px;
+}
+.emotionButton a {
+  font-family: Arial, Helvetica, sans-serif;
+  outline: 1px solid black;
+  color: #000000;
+  padding: 3px;
+  position: fixed;
+  top: 34px;
+  left: 97px;
+  font-size: 16px;
+  text-decoration: none;
+  padding-inline: 15px;
+}
+
+.outlines_mobile {
+  position: relative;
+  top: 28px;
+  width: auto;
+  height: 119px;
+  color: black;
+  z-index: 0;
+  /* border-bottom: 1px solid black; */
+  border-top: 1px solid black;
+  display: block;
+}
+
+#Hintergrund {
+  top: 26px;
+  left: 0;
+  font-family: sans-serif;
+  height: 100%;
+  width: auto;
+  position: fixed;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: -1;
+  padding: 15px;
+  padding-bottom: 80px;
+  overflow-y: auto;   /* vertical scroll when content overflows */
+  overflow-x: hidden; /* optional: prevent horizontal scroll */
+  border-right: none;
+}
+
+#emotionValueDisplay {
+  position: fixed;
+  top: 130px;
+  width: 100%;
+  left: 0px;
+  padding-left: 15px;
+  padding-top: 15px;
+  margin: 0;
+  color: rgb(0, 0, 0);
+  z-index: 100;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  border-top: 1px solid black;
+}
+
+.my-slider {
+  width: 216px;
+  accent-color: #585858;
+  position: fixed;
+  top: 164px;
+  left: 15px;
+}
+
+}
