@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="p5.min.js"></script>
   
   <script>
@@ -15,12 +16,12 @@
 
     if (isEmotionView) {
       console.log("active")
-      document.write('<link rel="stylesheet" type="text/css" href="Emotions_secondTry/style.css"/>');
-      document.write('<script src="Emotions_secondTry/just_writeOut.js" defer><\/script>');
+      document.write('<link rel="stylesheet" type="text/css" href="/Emotions_secondTry/style.css"/>');
+      document.write('<script src="/Emotions_secondTry/just_writeOut.js" defer><\/script>');
     } else {
       console.log("active")
-      document.write('<link rel="stylesheet" type="text/css" href="Genre/style_white.css" />');
-      document.write('<script src="Genre/just_writeOut.js" defer><\/script>');
+      document.write('<link rel="stylesheet" type="text/css" href="/Genre/style_white.css" />');
+      document.write('<script src="/Genre/just_writeOut.js" defer><\/script>');
     }
   }
      
@@ -37,13 +38,13 @@
     <div class="scrollInfo">
       <div class="left-arrow"></div>
       <div class="right-arrow"></div>
-      <img src="maus.png" alt="">
+      <img src="/maus.png" alt="">
     </div>
   </div>
 
 
   <div id="spotifyIntro">
-    <p class="IntroBanner"><span class="bold-title">To play music:</span> Use the provided account and confirm the following steps.</p>
+    <p class="IntroBanner"><span class="bold-title">To play music:</span> Use a Spotify Premium account and confirm the following steps.</p>
     <p class="loginButton">
       <a href="#" id="login">Login with Spotify</a>
     </p>
@@ -62,6 +63,7 @@
     <div id="Hintergrund">
     <p><span class="bold-title">History of Popular Music</span> is an interactive data visualization that explores the evolution of popular music between 1965 and 2010. Based on the Billboard Hot 100, it reveals how genres and emotional content in song lyrics have changed over the decades. The goal of the visualization is not only to highlight trends over time but also to allow users to discover individual songs and artists behind the data</p>
     <!-- Move these two lines here: -->
+    <div class="buttonsWrapper">
     <p class="genreButtonInfo">
       <a href="#" id="genreButton">Genre</a>
     </p>
@@ -69,18 +71,21 @@
     <p class="emotionButtonInfo">
       <a href="#" id="emotionButton">Emotions</a>
     </p>
-    <p class="genreText">This visualization assigns songs to different genres such as rock, hip-hop, pop, or jazz and shows during which periods these genres were particularly popular.<br><br>The number of songs varies from year to year due to missing song data. In addition, genre classification is based on AI-assisted audio analysis and may contain occasional inaccuracies. The underlying data comes from the study "The Evolution of Popular Music" by Mauch et al.</p>
+  </div>
+    <p class="genreText">This visualization assigns songs to different genres such as rock, hip-hop, pop, or jazz and shows during which periods these genres were particularly popular.<br><br>The number of songs varies from year to year due to missing song data. In addition, genre classification is based on AI-assisted audio analysis and may contain occasional inaccuracies. The underlying data comes from the study <a href="https://royalsocietypublishing.org/doi/full/10.1098/rsos.150081"> "The Evolution of Popular Music" by Mauch et al.</a></p>
     <p class="emotionText">The emotional impact of each <span class="bold-title">song's lyrics</span> was analyzed using AI-based emotion detection. The AI assigns a score between 0 (does not apply at all) and 1 (applies completely) to indicate how strongly a song relates to each of the five emotions.
       <br><br>
       The visualization displays the intensity of these emotions over time. As a starting point, the threshold was set to the average of all emotional values across all songs. This reference value helps avoid assigning songs to emotions arbitrarily—after all, with a threshold of 0, every song would match every emotion.
       <br><br>
       You can use the slider to adjust the threshold manually. The higher the threshold, the stronger the emotional relevance a song must have to be included. This allows you to easily discover which songs evoke a particular emotion most strongly.</p>
 
-    <p class="loginText"><span class="bold-title">To play music:</span> Use the provided account <br>and confirm the following steps.</p>
+    <p class="loginText"><span class="bold-title">To play music:</span> Use a Spotify Premium account and confirm the following steps.</p>
     <!-- <button id="login">Login with Spotify</button> -->
-    <p class="loginButton">
+    <div class="buttonSpacerLogin">
+    <p class="loginButtonInfo">
       <a href="#" id="login">Login with Spotify</a>
     </p>
+  </div>
     
     </div>
   </div>
@@ -98,6 +103,7 @@
     </svg>
 
   </button>
+  <div class="outlines_mobile"></div>
   <div id="Legende"></div>
   <p class="genreButton">
     <a href="?view=genre">Genre</a>
@@ -108,14 +114,16 @@
   </p>
 
 </div>
+
 <div id="songList" style="position: fixed; left: 0px; top: 94px; max-height: 95vh; overflow-y: auto; color: white;"></div>
+
 
 
 </head>
 <body>
   <script>
     const client_id = '5efc4a0c8c6d453f8bd56a9a46a926f0'; // <-- Ersetze mit deiner Client ID
-    const redirect_uri = 'https://lukasfrauenfelder.github.io/History-Of-Popular-Music/callback.html';
+    const redirect_uri = 'http://127.0.0.1:8889/callback.html';
 
     function generateCodeVerifier(length = 128) {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
@@ -262,9 +270,14 @@
     const infoBox = document.getElementById("infoBox");
     const Hintergrund = document.getElementById("Hintergrund");
 
+    const Slider = document.getElementById("sliderContainer");
+    console.log(Slider)
+
     // Toggle "active" class
     infoBox.classList.toggle("active");
     Hintergrund.classList.toggle("active")
+
+    Slider.classList.toggle("active")
     
   });
   </script>
@@ -385,7 +398,7 @@
         RnBButton.classList.add("active")
 
 
-      }, 60000); // 60 seconds of inactivity (adjust as needed)
+      }, 180000); // 60 seconds of inactivity (adjust as needed)
     }
 
     // Start inactivity detection
