@@ -239,13 +239,13 @@ html, body {
   display: inline-flex;
 }
 
-a {
+.genreText a {
   color: rgb(0, 0, 0);        /* link color */
   text-decoration: underline; /* underline (default) */
   text-underline-offset: 4px;       /* push underline further down */
 }
 
-a:hover {
+.genreText a:hover {
   color: rgb(0, 0, 0);     /* color on hover */
   text-decoration: none; 
 }
