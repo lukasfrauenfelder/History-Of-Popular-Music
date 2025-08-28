@@ -170,35 +170,48 @@
     })
   </script>
   <script>
-    function playSong(device_id, token,songUri,Title) {
-      console.log("Spiele ab:", Title);
-      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          uris: [songUri] // Beispiel-Song
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-      })
-      .then(response => {
-        if (response.ok) {
-          console.log('Song gestartet!');
-           // ✅ Show the play/pause toggle button
-            document.getElementById('togglePlay').style.display = "inline-block";
-             // ✅ Force icon states: show pause icon, hide play icon
-          document.getElementById('pauseIcon').style.display = "block";
-          document.getElementById('playIcon').style.display = "none";
-            isPlaying = true
-        } else {
-          console.error('Fehler beim Starten:', response.statusText);
-        }
-      });
+   function playSong(device_id, token, songUri, Title) {
+  console.log("Spiele ab:", Title);
 
-      const Soong = document.querySelector(".songTitle");
-      Soong.textContent = Title
+  // 1. Make sure this device is active before playback
+  fetch("https://api.spotify.com/v1/me/player", {
+    method: "PUT",
+    body: JSON.stringify({ device_ids: [device_id], play: true }),
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
     }
+  })
+  .then(() => {
+    // 2. Start playback immediately after transfer
+    return fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
+      method: "PUT",
+      body: JSON.stringify({ uris: [songUri] }),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+    });
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log("Song gestartet!");
+
+      // ✅ Update UI instantly
+      document.getElementById("togglePlay").style.display = "inline-block";
+      document.getElementById("pauseIcon").style.display = "block";
+      document.getElementById("playIcon").style.display = "none";
+      isPlaying = true;
+    } else {
+      console.error("Fehler beim Starten:", response.statusText);
+    }
+  });
+
+  // 3. Update song title
+  const Soong = document.querySelector(".songTitle");
+  Soong.textContent = Title;
+}
+
 
     window.playSong = playSong;
     // window.SpotifyIntroduction = SpotifyIntroduction
